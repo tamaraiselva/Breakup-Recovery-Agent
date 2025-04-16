@@ -7,4 +7,5 @@ agno
 streamlit
 requests
 pillow
+google-genai
 google-generativeai
