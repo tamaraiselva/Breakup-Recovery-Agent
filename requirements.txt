@@ -1,3 +1,4 @@
+
 fastapi
 uvicorn
 python-multipart
@@ -6,3 +7,4 @@ agno
 streamlit
 requests
 pillow
+google-generativeai
