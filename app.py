@@ -3,13 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.media import Image as AgnoImage
-from agno.tools.duckduckgo import DuckDuckGoTools
 from typing import List
 from pathlib import Path
 import tempfile
 import os
+import sys
 from typing import Optional
 from dotenv import load_dotenv
+
+# Try to import DuckDuckGoTools, but handle the case where it's not available
+try:
+    from agno.tools.duckduckgo import DuckDuckGoTools
+    DUCKDUCKGO_AVAILABLE = True
+except ImportError:
+    print("Warning: duckduckgo-search package not installed. Brutal Honesty Agent will run without search capabilities.")
+    DUCKDUCKGO_AVAILABLE = False
 
 # Load environment variables
 load_dotenv()
@@ -35,7 +43,7 @@ def initialize_agents(api_key: str = None):
         api_key = os.getenv("API_KEY")
         if not api_key:
             raise ValueError("API_KEY environment variable is not set")
-    
+
     model = Gemini(id="gemini-2.0-flash-exp", api_key=api_key)
 
     therapist_agent = Agent(
@@ -65,15 +73,26 @@ def initialize_agents(api_key: str = None):
         markdown=True
     )
 
-    brutal_honesty_agent = Agent(
-        model=model,
-        name="Brutal Honesty Agent",
-        tools=[DuckDuckGoTools()],
-        instructions=[
-            "You are a direct feedback specialist that gives blunt truth...",
-        ],
-        markdown=True
-    )
+    # Create the Brutal Honesty Agent with or without search tools based on availability
+    if DUCKDUCKGO_AVAILABLE:
+        brutal_honesty_agent = Agent(
+            model=model,
+            name="Brutal Honesty Agent",
+            tools=[DuckDuckGoTools()],
+            instructions=[
+                "You are a direct feedback specialist that gives blunt truth...",
+            ],
+            markdown=True
+        )
+    else:
+        brutal_honesty_agent = Agent(
+            model=model,
+            name="Brutal Honesty Agent",
+            instructions=[
+                "You are a direct feedback specialist that gives blunt truth...",
+            ],
+            markdown=True
+        )
 
     return therapist_agent, closure_agent, routine_planner_agent, brutal_honesty_agent
 
