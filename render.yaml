@@ -1,0 +1,15 @@
+services:
+  # A web service for the Breakup Recovery Agent
+  - type: web
+    name: breakup-recovery-agent
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: API_KEY
+        sync: false
+      - key: API_URL
+        value: https://breakup-recovery-agent.onrender.com/analyze/
+      - key: ENVIRONMENT
+        value: production
