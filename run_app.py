@@ -17,9 +17,9 @@ def run_streamlit():
     print("Starting Streamlit frontend...")
     # In production, we need to specify the host as 0.0.0.0 to make it accessible
     if os.environ.get("ENVIRONMENT") == "production":
-        subprocess.run([sys.executable, "-m", "streamlit", "run", "streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0"])
+        subprocess.run([sys.executable, "-m", "streamlit", "run", "streamlit_app.py", "--host", "0.0.0.0", "--port", "8501"])
     else:
-        subprocess.run([sys.executable, "-m", "streamlit", "run", "streamlit_app.py", "--server.port", "8501"])
+        subprocess.run([sys.executable, "-m", "streamlit", "run", "streamlit_app.py", "--port", "8501"])
 
 def open_browser():
     # Only open browser in development mode
