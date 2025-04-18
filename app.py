@@ -11,7 +11,6 @@ import sys
 from typing import Optional
 from dotenv import load_dotenv
 
-# Try to import DuckDuckGoTools, but handle the case where it's not available
 try:
     from agno.tools.duckduckgo import DuckDuckGoTools
     DUCKDUCKGO_AVAILABLE = True
@@ -19,15 +18,13 @@ except ImportError:
     print("Warning: duckduckgo-search package not installed. Brutal Honesty Agent will run without search capabilities.")
     DUCKDUCKGO_AVAILABLE = False
 
-# Load environment variables
 load_dotenv()
 
 app = FastAPI()
 
-# Allow CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict this to your frontend domain
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,7 +35,6 @@ async def root():
     return {"status": "ok", "message": "API is running"}
 
 def initialize_agents(api_key: str = None):
-    # Use environment variable if no API key is provided
     if api_key is None:
         api_key = os.getenv("API_KEY")
         if not api_key:
@@ -73,7 +69,6 @@ def initialize_agents(api_key: str = None):
         markdown=True
     )
 
-    # Create the Brutal Honesty Agent with or without search tools based on availability
     if DUCKDUCKGO_AVAILABLE:
         brutal_honesty_agent = Agent(
             model=model,
@@ -120,7 +115,6 @@ async def analyze(
 
         results = {}
 
-        # Therapist Agent response
         therapist_response = therapist.run(
             message=f"Analyze and support user feeling: {user_input}", images=images
         )
@@ -129,7 +123,6 @@ async def analyze(
             "data": therapist_response.content if therapist_response else "No response"
         }
 
-        # Closure Agent response
         closure_response = closure.run(
             message=f"Help user with closure: {user_input}", images=images
         )
@@ -138,7 +131,6 @@ async def analyze(
             "data": closure_response.content if closure_response else "No response"
         }
 
-        # Routine Planner Agent response
         routine_response = routine.run(
             message=f"Create 7-day recovery plan: {user_input}", images=images
         )
@@ -147,7 +139,6 @@ async def analyze(
             "data": routine_response.content if routine_response else "No response"
         }
 
-        # Brutal Honesty Agent response
         honesty_response = honesty.run(
             message=f"Give honest feedback about: {user_input}", images=images
         )

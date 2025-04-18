@@ -9,11 +9,13 @@ I've updated the `requirements.txt` and `Dockerfile` to include the missing pack
 1. Make sure your `requirements.txt` file includes `duckduckgo-search` (I've already added it)
 
 2. Rebuild your Docker image:
+
    ```bash
    docker build -t breakup-recovery-agent .
    ```
 
 3. Run the container again:
+
    ```bash
    docker run -p 8000:8000 -p 8501:8501 -e API_KEY="your_gemini_api_key_here" breakup-recovery-agent
    ```
@@ -25,6 +27,7 @@ If you don't want to rebuild the Docker image, I've also modified the `app.py` f
 ## Explanation
 
 The error occurred because:
+
 - The `agno.tools.duckduckgo` module depends on the `duckduckgo-search` package
 - This dependency wasn't explicitly listed in your requirements.txt file
 - When the Docker container was built, it didn't install this necessary package
