@@ -9,3 +9,4 @@ pillow
 google-genai
 google-generativeai
 duckduckgo-search
+mcp
